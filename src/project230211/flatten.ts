@@ -1,18 +1,29 @@
 /**
- * 数组扁平化
+ *
  * @param array
- * @param key
+ * @param generateValue
  * @returns
  */
-function flatten(array: any[], key = "children"): any[] {
+function flatten<T>(
+  array: T[],
+  generateValue?: (item: T) => T[] | undefined
+): T[] {
   return array.reduce((acc, cur) => {
-    if (Array.isArray(cur?.[key])) {
-      const { [key]: tmp = [], ...rest } = cur;
-      return [...acc, rest, ...flatten(tmp, key)];
+    let tmp: T | T[] = cur;
+    if (
+      Object.prototype.toString.call(cur) === "[object Object]" &&
+      generateValue?.(cur)
+    ) {
+      tmp = generateValue?.(cur)!;
+    }
+
+    if (Array.isArray(tmp)) {
+      const prev = generateValue?.(cur) ? [...acc, cur] : acc;
+      return [...prev, ...flatten(tmp, generateValue)];
     } else {
       return [...acc, cur];
     }
-  }, []);
+  }, [] as T[]);
 }
 const data = [
   {
@@ -45,4 +56,7 @@ const data = [
   },
 ];
 
-console.log(flatten(data));
+const numbers = [1, [2, 3], 4, [5, 6, [7, 8]]];
+
+console.log(flatten(numbers));
+// console.log(flatten(data, (item) => item.children));

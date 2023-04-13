@@ -1,5 +1,5 @@
 /**
- *
+ * 数组扁平化
  * @param array
  * @param generateValue
  * @returns
@@ -18,7 +18,19 @@ function flatten<T>(
     }
 
     if (Array.isArray(tmp)) {
-      const prev = generateValue?.(cur) ? [...acc, cur] : acc;
+      let prev = acc;
+
+      if (generateValue?.(cur)) {
+        let property: keyof T;
+        for (let key in cur) {
+          cur[key] === generateValue?.(cur) && (property = key);
+        }
+
+        if (property!) {
+          const { [property]: a, ...rest } = cur;
+          prev = [...acc, rest as T];
+        }
+      }
       return [...prev, ...flatten(tmp, generateValue)];
     } else {
       return [...acc, cur];

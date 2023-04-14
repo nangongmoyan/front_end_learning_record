@@ -10,20 +10,18 @@ function flatten<T>(
 ): T[] {
   return array.reduce((acc, cur) => {
     let tmp: T | T[] = cur;
-    if (
-      Object.prototype.toString.call(cur) === "[object Object]" &&
-      generateValue?.(cur)
-    ) {
-      tmp = generateValue?.(cur)!;
+    const propertyValue = generateValue?.(cur);
+    if (Object.prototype.toString.call(cur) === "[object Object]") {
+      propertyValue && (tmp = propertyValue);
     }
 
     if (Array.isArray(tmp)) {
       let prev = acc;
 
-      if (generateValue?.(cur)) {
+      if (propertyValue) {
         let property: keyof T;
         for (let key in cur) {
-          cur[key] === generateValue?.(cur) && (property = key);
+          cur[key] === propertyValue && (property = key);
         }
 
         if (property!) {
@@ -70,5 +68,5 @@ const data = [
 
 const numbers = [1, [2, 3], 4, [5, 6, [7, 8]]];
 
-console.log(flatten(numbers));
-// console.log(flatten(data, (item) => item.children));
+// console.log(flatten(numbers));
+console.log(flatten(data, (item) => item.children));

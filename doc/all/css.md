@@ -8,7 +8,7 @@
 
 ##### 不同点
 
-- display:none 会让元素完全从渲染树中消失，渲染的时候不占据任何空间；visibility:hidden 不会让元素从渲染树中消失，渲染元素继续占据空间，知识内容不可见
+- display:none 会让元素完全从渲染树中消失，渲染的时候不占据任何空间；visibility:hidden 不会让元素从渲染树中消失，渲染元素继续占据空间，只是内容不可见
 - 修改常规流中元素的 display 通常会造成页面重排，修改 visibility 属性只会造成本元素的重绘
 
 ### 2.z-index 是什么?在 position 的值什么时候可以触发?
@@ -46,4 +46,4 @@ animation 动画由@keyframes 来描述每一帧的样式
 - transition 通常和 hover 等时间配合使用，animation 是自发的，立即播放
 - transition 是一次性的，animation 可设置循环次数
 - transition 只能设置头尾的样式，animation 可设置每一帧的样式和时间
-- transition 可与 js 配合使用，js 设定要变化的样式，transitiob 负责动画效果
+- transition 可与 js 配合使用，js 设定要变化的样式，transition 负责动画效果

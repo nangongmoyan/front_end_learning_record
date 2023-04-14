@@ -11,7 +11,7 @@
 
 **注：一切皆为模块，由于 webpack 只支持 js 文件，所以需要用 loader 转换为 webpack 支持的模块，其中 plugin 用于扩张 webpack 的功能，在 webpack 构建生命周期的过程中， 在合适的时机做了合适的事情。**
 
-##### webpack 的变异原理可以分为以下几个步骤：
+##### webpack 的编译原理可以分为以下几个步骤：
 
 - **读取配置文件：** webpack 会读取指定的配置文件，并解析其中的各种配置项
 - **解析依赖关系：** webpack 会根据入口文件递归的解析出所有的依赖关系，生成依赖关系树
@@ -25,6 +25,6 @@
 - **提取公共库，避免重复引用：** 使用 DLLPlugin，把第三方库文件分离出来单独编译，并且缓存；极大的减少业务页面的编译时间。dll 方式也就是通过配置，告诉 webpoack 指定库在项目中的位置，从而直接引入，不将其打包在内
 - **happypack：** 多线程解析文件，如 babel-loader 等耗时较长的
 - **缓存：** cache-loader
-- **include/exclude：** loaders 应尽可能配置解析路金 include 参数，排除路径 exclude 参数， 减少解析时查询范围
+- **include/exclude：** loaders 应尽可能配置解析路径 include 参数，排除路径 exclude 参数， 减少解析时查询范围
 - **devtool：** dev 阶段 adevtool 设置成 cheap-module-eval-source-map，已经能满足调试需求，编译能更快
 - **product 阶段去掉 source-map**

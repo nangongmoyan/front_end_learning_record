@@ -1,121 +1,145 @@
-export enum CloneType {
-  Object = "Object",
-  Array = "Array",
-  Date = "Date",
-  RegExp = "RegExp",
-  Function = "Function",
-  String = "String",
-  Number = "Number",
-  Boolean = "Boolean",
-  Undefined = "Undefined",
-  Null = "Null",
-  Symbol = "Symbol",
-  Set = "Set",
-  Map = "Map",
-}
+// export enum CloneType {
+//   Object = "Object",
+//   Array = "Array",
+//   Date = "Date",
+//   RegExp = "RegExp",
+//   Function = "Function",
+//   String = "String",
+//   Number = "Number",
+//   Boolean = "Boolean",
+//   Undefined = "Undefined",
+//   Null = "Null",
+//   Symbol = "Symbol",
+//   Set = "Set",
+//   Map = "Map",
+// }
 
-export type _CloneType = keyof typeof CloneType;
+import { countBy } from "lodash";
+import { getJSDataType } from "moyan-utils";
 
-/**
- * 检测数据类型
- * @param type cloneType
- * @param obj 检测的数据源
- * @returns Boolean
- */
-function isType<T>(type: _CloneType, obj: T) {
-  return Object.prototype.toString.call(obj) === `[object ${type}]`;
-}
+// export type _CloneType = keyof typeof CloneType;
 
-function cloneDeep<T>(obj: T, cache = new WeakMap()): T {
-  // 如果不是对象或者是null，直接返回
-  if (typeof obj !== "object" || obj == null) {
-    return obj;
-  }
+// /**
+//  * 检测数据类型
+//  * @param type cloneType
+//  * @param obj 检测的数据源
+//  * @returns Boolean
+//  */
+// function isType<T>(type: _CloneType, obj: T) {
+//   return Object.prototype.toString.call(obj) === `[object ${type}]`;
+// }
 
-  // 如果已经缓存过，直接返回缓存的值
-  if (cache.has(obj)) {
-    return cache.get(obj);
-  }
+// function cloneDeep<T>(obj: T, cache = new WeakMap()): T {
+//   // 如果不是对象或者是null，直接返回
+//   if (typeof obj !== "object" || obj == null) {
+//     return obj;
+//   }
 
-  // 初始化返回结果
-  let result: T, param!: T;
-  // 如果是日期对象，直接返回一个新的日期对象
-  if (isType(CloneType.Date, obj) || isType(CloneType.RegExp, obj)) {
-    param = obj;
-  }
+//   // 如果已经缓存过，直接返回缓存的值
+//   if (cache.has(obj)) {
+//     return cache.get(obj);
+//   }
 
-  result = new (obj as any).constructor(param);
-  // 如果是数组或对象，需要遍历
-  if (isType(CloneType.Array, obj) || isType(CloneType.Object, obj)) {
-    for (let key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        result[key] = cloneDeep(obj[key], cache);
-      }
-    }
-  }
+//   // 初始化返回结果
+//   let result: T, param!: T;
+//   // 如果是日期对象，直接返回一个新的日期对象
+//   if (isType(CloneType.Date, obj) || isType(CloneType.RegExp, obj)) {
+//     param = obj;
+//   }
 
-  // 如果是Set
-  if (isType(CloneType.Set, obj)) {
-    for (let value of obj as unknown as Set<T>) {
-      (result as Set<T>).add(cloneDeep(value, cache));
-    }
-  }
+//   result = new (obj as any).constructor(param);
+//   // 如果是数组或对象，需要遍历
+//   if (isType(CloneType.Array, obj) || isType(CloneType.Object, obj)) {
+//     for (let key in obj) {
+//       if (obj.hasOwnProperty(key)) {
+//         result[key] = cloneDeep(obj[key], cache);
+//       }
+//     }
+//   }
 
-  // 如果是Map
-  if (isType(CloneType.Map, obj)) {
-    for (let [key, value] of obj as unknown as Map<T, T>) {
-      (result as Map<T, T>).set(cloneDeep(key, cache), cloneDeep(value, cache));
-    }
-  }
-  // 缓存值
-  cache.set(obj, result);
-  return result;
-}
+//   // 如果是Set
+//   if (isType(CloneType.Set, obj)) {
+//     for (let value of obj as unknown as Set<T>) {
+//       (result as Set<T>).add(cloneDeep(value, cache));
+//     }
+//   }
 
-const obj1 = { a: 1, b: 2, c: { d: 3, e: 4 }, f: 5, g: { h: 6 } };
+//   // 如果是Map
+//   if (isType(CloneType.Map, obj)) {
+//     for (let [key, value] of obj as unknown as Map<T, T>) {
+//       (result as Map<T, T>).set(cloneDeep(key, cache), cloneDeep(value, cache));
+//     }
+//   }
+//   // 缓存值
+//   cache.set(obj, result);
+//   return result;
+// }
 
-console.log(obj1.toString());
-// const obj2 = cloneDeep(obj1);
+// const obj1 = { a: 1, b: 2, c: { d: 3, e: 4 }, f: 5, g: { h: 6 } };
 
-// console.log(obj1.c === obj2.c);
+// console.log(obj1.toString());
+// // const obj2 = cloneDeep(obj1);
 
-// const data = [
-//   {
-//     id: 1,
-//     name: "item1",
-//     children: [
-//       {
-//         id: 2,
-//         name: "item2",
-//         children: [
-//           {
-//             id: 3,
-//             name: "item3",
-//           },
-//           {
-//             id: 4,
-//             name: "item4",
-//           },
-//         ],
-//       },
-//       {
-//         id: 5,
-//         name: "item5",
-//       },
-//     ],
-//   },
-//   {
-//     id: 6,
-//     name: "item6",
-//   },
-// ];
+// // console.log(obj1.c === obj2.c);
 
-// const set = new Set(data);
+// // const data = [
+// //   {
+// //     id: 1,
+// //     name: "item1",
+// //     children: [
+// //       {
+// //         id: 2,
+// //         name: "item2",
+// //         children: [
+// //           {
+// //             id: 3,
+// //             name: "item3",
+// //           },
+// //           {
+// //             id: 4,
+// //             name: "item4",
+// //           },
+// //         ],
+// //       },
+// //       {
+// //         id: 5,
+// //         name: "item5",
+// //       },
+// //     ],
+// //   },
+// //   {
+// //     id: 6,
+// //     name: "item6",
+// //   },
+// // ];
 
-// console.log(set === cloneDeep(set));
-// const rltData = cloneDeep(data);
-// console.log(rltData[0]);
+// // const set = new Set(data);
 
-// const reg = new RegExp("abc", "g");
+// // console.log(set === cloneDeep(set));
+// // const rltData = cloneDeep(data);
+// // console.log(rltData[0]);
 
-// console.log(reg === cloneDeep(reg));
+// // const reg = new RegExp("abc", "g");
+
+// // console.log(reg === cloneDeep(reg));
+
+// const array = [1, 2, 3, 4];
+
+// const set = new Set(array);
+// const set1 = cloneDeep(set);
+// console.log({ set, set1 });
+// const json = '{"user1":"John","user2":"Kate","user3":"Peter"}';
+
+// const map = new Map(Object.entries(JSON.parse(json)));
+// const map1 = cloneDeep(map);
+// console.log({ map1 });
+
+const obj = { a: 1, b: { c: 2 }, d: 4 };
+// console.log(
+//   countBy(obj, (item) => {
+//     console.log({ item });
+//     return item;
+//   })
+// );
+
+// console.log(getJSDataType(obj));
